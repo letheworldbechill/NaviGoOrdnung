@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NavigoOrdnung</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>NavigoOrdnung</h1>
+        <button id="settings-button">Einstellungen</button>
+    </header>
+    <main>
+        <div id="grid-container"></div>
+    </main>
+
+    <!-- Einstellungen Modal -->
+    <div id="settings-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Einstellungen</h2>
+            <div id="settings-grid"></div>
+            <button id="save-settings">Speichern</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
