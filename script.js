@@ -7,14 +7,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const saveSettingsButton = document.getElementById('save-settings');
 
     const GRID_SIZE = 20;
-    let cellStates = [];
-    let apartmentLayout = [];
+    let cellStates = Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE).fill(false));
+    let apartmentLayout = Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE).fill(true));
 
-    // Initialisiere Zellen
+    // Initialize grid cells
     function initializeGrid() {
         gridContainer.innerHTML = '';
         for (let row = 0; row < GRID_SIZE; row++) {
-            cellStates[row] = [];
             for (let col = 0; col < GRID_SIZE; col++) {
                 const cell = document.createElement('div');
                 cell.classList.add('cell');
@@ -27,15 +26,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     cellStates[row][col] = false;
                 }
 
-                // Zelle klicken
+                // Click to toggle cell state
                 cell.addEventListener('click', () => {
                     cell.classList.toggle('clean');
                     cellStates[row][col] = !cellStates[row][col];
                     localStorage.setItem(key, cellStates[row][col] ? 'clean' : 'dirty');
                 });
 
-                // Sichtbarkeit basierend auf Apartment Layout
-                if (apartmentLayout[row] && apartmentLayout[row][col]) {
+                // Set visibility based on apartment layout
+                if (apartmentLayout[row][col]) {
                     cell.style.display = 'block';
                 } else {
                     cell.style.display = 'none';
@@ -46,37 +45,28 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Lade Einstellungen
+    // Load settings from localStorage
     function loadSettings() {
         const savedLayout = localStorage.getItem('apartmentLayout');
         if (savedLayout) {
             apartmentLayout = JSON.parse(savedLayout);
-        } else {
-            // Standard: alle Zellen aktiv
-            for (let row = 0; row < GRID_SIZE; row++) {
-                apartmentLayout[row] = [];
-                for (let col = 0; col < GRID_SIZE; col++) {
-                    apartmentLayout[row][col] = true;
-                }
-            }
         }
     }
 
-    // Initialisiere Einstellungen Modal
+    // Initialize settings modal
     function initializeSettingsModal() {
         settingsGrid.innerHTML = '';
-        for (let row = 0; row < 10; row++) { // Beispiel: 10x10 Einstellungen
+        for (let row = 0; row < 10; row++) { // Example: 10x10 settings
             for (let col = 0; col < 10; col++) {
                 const cell = document.createElement('div');
                 cell.classList.add('settings-cell');
-                if (apartmentLayout[row] && apartmentLayout[row][col]) {
+                if (apartmentLayout[row][col]) {
                     cell.classList.add('active');
                 }
 
                 cell.addEventListener('click', () => {
                     cell.classList.toggle('active');
-                    if (!apartmentLayout[row]) apartmentLayout[row] = [];
-                    apartmentLayout[row][col] = apartmentLayout[row][col] ? false : true;
+                    apartmentLayout[row][col] = !apartmentLayout[row][col];
                 });
 
                 settingsGrid.appendChild(cell);
@@ -84,26 +74,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Speichere Einstellungen
+    // Save settings to localStorage
     function saveSettings() {
         localStorage.setItem('apartmentLayout', JSON.stringify(apartmentLayout));
         initializeGrid();
         closeSettingsModal();
     }
 
-    // Öffne Einstellungen Modal
+    // Open settings modal
     settingsButton.addEventListener('click', () => {
         initializeSettingsModal();
         settingsModal.style.display = 'block';
     });
 
-    // Schließe Einstellungen Modal
-    closeModal.addEventListener('click', () => {
-        closeSettingsModal();
-    });
+    // Close settings modal
+    closeModal.addEventListener('click', closeSettingsModal);
 
     window.addEventListener('click', (event) => {
-        if (event.target == settingsModal) {
+        if (event.target === settingsModal) {
             closeSettingsModal();
         }
     });
@@ -114,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     saveSettingsButton.addEventListener('click', saveSettings);
 
-    // Tägliches Zurücksetzen um 02:00 Uhr
+    // Schedule daily reset at 2 AM
     function scheduleDailyReset() {
         const now = new Date();
         const resetTime = new Date();
@@ -128,17 +116,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         setTimeout(() => {
             resetCells();
-            scheduleDailyReset(); // Wiederhole täglich
+            scheduleDailyReset(); // Repeat daily
         }, timeout);
     }
 
-    // Setze alle Zellen zurück
+    // Reset all cells
     function resetCells() {
         for (let row = 0; row < GRID_SIZE; row++) {
             for (let col = 0; col < GRID_SIZE; col++) {
                 const key = `${row}-${col}`;
                 const cell = gridContainer.children[row * GRID_SIZE + col];
-                if (apartmentLayout[row] && apartmentLayout[row][col]) {
+                if (apartmentLayout[row][col]) {
                     cell.classList.remove('clean');
                     cellStates[row][col] = false;
                     localStorage.setItem(key, 'dirty');
@@ -146,6 +134,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     }
+
+    // Load everything on start
+    loadSettings();
+    initializeGrid();
+    scheduleDailyReset();
+});
 
     // Lade alles beim Start
     loadSettings();
