@@ -1,132 +1,88 @@
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
+:root{
+  --cell:30px;
+  --cell-settings:25px;
+  --gap:2px;
+  --accent:#007bff;
+  --ok:#28a745;
+  --fg:#111;
+  --bg:#f0f0f0;
+  --hdr:#333;
+  --hdr-fg:#fff;
+}
+@media (max-width:600px){
+  :root{ --cell:20px; --cell-settings:20px; }
 }
 
-header {
-    background-color: #333;
-    color: #fff;
-    padding: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+* { box-sizing:border-box }
+html,body{ height:100% }
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  display:flex; flex-direction:column;
+  color:var(--fg); background:var(--bg);
 }
 
-header h1 {
-    margin: 0;
-    font-size: 1.5em;
+/* Header */
+header{
+  background:var(--hdr); color:var(--hdr-fg);
+  display:flex; align-items:center; justify-content:space-between;
+  padding:10px 20px;
+}
+header h1{ margin:0; font-size:1.125rem }
+.header-actions{ display:flex; gap:8px }
+
+/* Buttons */
+.btn{
+  appearance:none; border:0; border-radius:6px;
+  padding:8px 14px; cursor:pointer; font-size:1rem; line-height:1;
+  background:#555; color:#fff;
+  transition:filter .2s ease;
+}
+.btn:hover{ filter:brightness(1.1) }
+.btn--primary{ background:var(--accent) }
+.btn--success{ background:var(--ok) }
+
+/* Layout */
+main{ flex:1; display:flex; justify-content:center; align-items:center; overflow:auto; padding:10px }
+#grid{ display:grid; gap:var(--gap) }
+
+/* Cells */
+.cell{
+  width:var(--cell); height:var(--cell);
+  border:1px solid #000; background:#fff; cursor:pointer;
+  transition:background-color .2s ease;
+  user-select:none;
+}
+.cell.active{ background:#fdd }
+.cell.active.clean{ background:lightgreen }
+.cell.inactive{ background:#fff; cursor:default }
+
+/* Modal */
+.modal{
+  position:fixed; inset:0; display:none; place-items:center;
+  background:rgba(0,0,0,.4); z-index:1000;
+}
+.modal[open]{ display:grid }
+.dialog{
+  background:#fff; width:min(800px,90vw); max-height:90vh; overflow:auto;
+  border:1px solid #888; border-radius:10px; padding:16px 16px 20px;
+}
+.dialog-header{ display:flex; align-items:center; gap:8px }
+.dialog h2{ margin:0 0 8px }
+.close{
+  margin-left:auto;
+  background:transparent; color:#666;
+  border:0; font-size:24px; cursor:pointer;
 }
 
-header button {
-    padding: 8px 16px;
-    font-size: 1em;
-    cursor: pointer;
+#settings-grid{ display:grid; gap:var(--gap); margin:12px 0 16px }
+.s-cell{
+  width:var(--cell-settings); height:var(--cell-settings);
+  border:1px solid #000; background:#ccc; cursor:pointer;
+  transition:background-color .2s ease; user-select:none;
 }
-
-main {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #f0f0f0;
-}
-
-#grid-container {
-    display: grid;
-    grid-template-columns: repeat(20, 30px);
-    grid-template-rows: repeat(20, 30px);
-    gap: 2px;
-}
-
-.cell {
-    width: 30px;
-    height: 30px;
-    background-color: red;
-    border: 1px solid #000;
-    cursor: pointer;
-}
-
-.cell.clean {
-    background-color: lightgreen;
-}
-
-/* Modal Stile */
-.modal {
-    display: none; /* Versteckt das Modal standardmäßig */
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.4);
-}
-
-.modal-content {
-    background-color: #fefefe;
-    margin: 10% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 90%;
-    max-width: 600px;
-}
-
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.close:hover,
-.close:focus {
-    color: black;
-}
-
-#settings-grid {
-    display: grid;
-    grid-template-columns: repeat(10, 25px);
-    grid-template-rows: repeat(10, 25px);
-    gap: 2px;
-    margin-bottom: 20px;
-}
-
-.settings-cell {
-    width: 25px;
-    height: 25px;
-    background-color: #ccc;
-    border: 1px solid #000;
-    cursor: pointer;
-}
-
-.settings-cell.active {
-    background-color: #333;
-}
-
-/* Responsive Anpassungen */
-@media (max-width: 600px) {
-    #grid-container {
-        grid-template-columns: repeat(20, 20px);
-        grid-template-rows: repeat(20, 20px);
-    }
-
-    .cell {
-        width: 20px;
-        height: 20px;
-    }
-
-    #settings-grid {
-        grid-template-columns: repeat(10, 20px);
-        grid-template-rows: repeat(10, 20px);
-    }
-
-    .settings-cell {
-        width: 20px;
-        height: 20px;
-    }
-}
+.s-cell.active{ background:#333 }
+.row{ display:flex; gap:8px; align-items:center; margin:6px 0 }
+.row input[type="number"]{ width:6rem; padding:6px; border-radius:6px; border:1px solid #bbb }
+.hint{ font-size:.9rem; color:#444 }
+.dialog-actions{ display:flex; gap:8px; margin-top:12px }
