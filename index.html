@@ -1,31 +1,53 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NavigoOrdnung</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NavigoOrdnung</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-    <header>
-        <h1>NavigoOrdnung</h1>
-        <button id="settings-button">Einstellungen</button>
-    </header>
-    <main>
-        <div id="grid-container"></div>
-    </main>
-
-    <!-- Einstellungen Modal -->
-    <div id="settings-modal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Einstellungen</h2>
-            <div id="settings-grid"></div>
-            <button id="save-settings">Speichern</button>
-        </div>
+  <header>
+    <h1>NavigoOrdnung</h1>
+    <div class="header-actions">
+      <button id="reset-now" class="btn">Jetzt zurücksetzen</button>
+      <button id="settings-btn" class="btn">Einstellungen</button>
     </div>
+  </header>
 
-    <script src="script.js"></script>
+  <main>
+    <div id="grid" aria-label="Reinigungsraster" role="grid"></div>
+  </main>
+
+  <!-- Einstellungen / Modal -->
+  <div id="modal" class="modal" aria-hidden="true">
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg-title">
+      <header class="dialog-header">
+        <h2 id="dlg-title">Einstellungen</h2>
+        <button class="close" type="button" aria-label="Schließen" id="close-btn">×</button>
+      </header>
+
+      <div class="row">
+        <label for="rows">Reihen:</label>
+        <input id="rows" type="number" min="1" max="50">
+        <label for="cols">Spalten:</label>
+        <input id="cols" type="number" min="1" max="50">
+        <button id="apply-size" class="btn btn--primary" type="button">Größe anwenden</button>
+      </div>
+
+      <h3>Apartment-Layout</h3>
+      <p class="hint">Klicke Zellen, um aktiv (sichtbar) ↔ inaktiv umzuschalten.</p>
+      <div id="settings-grid" aria-label="Layout" role="grid"></div>
+
+      <div class="dialog-actions">
+        <button id="save" class="btn btn--success" type="button">Speichern</button>
+        <button id="export" class="btn" type="button">Exportieren</button>
+        <input id="import" type="file" accept="application/json" hidden>
+        <button id="import-btn" class="btn" type="button">Importieren</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js" defer></script>
 </body>
 </html>
-
